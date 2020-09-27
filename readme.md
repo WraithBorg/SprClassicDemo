@@ -55,10 +55,10 @@
 `@EventListener(value = {SprComplexEvent4CreateBill.class, SprComplexEvent4UpdateBill.class}, condition = "#event.sprUser.age > 18")`   
 这段注解表示，该方法监听SprComplexEvent4CreateBill和SprComplexEvent4UpdateBill两种事件，而且只有当sprUser对象的age属性大于18的时候，才会出发监听器  
 
-## 浏览器域名并发限制
+## 浏览器对于同域名下的并发限制
 #### 现象一
 > 浏览器打开两个窗口，访问同一个请求，会产生同步现象， 只有当第一个窗口的请求成功返回后，第二个窗口的请求才开始发送，  
-> 但是如果第二个窗口打开控制台的在调用的话，后台会同时收到两次请求，没有等待现象  
+> 但是如果第二个窗口打开浏览器控制台，两个窗口继续同时访问同一个请求，后台会同时收到两次请求，没有等待现象  
 > 但是如果用postman同时调两次该请求的话，后台会同时收到两次请求，没有等待现象  
 > 但是如果用一个chrome窗口和一个360浏览器窗口，同时调用该请求的话，也没有等待现象  
 > 但是如果用同一个ip 绑定两个域名，然后用两个域名访问该接口，也没有等待现象  
