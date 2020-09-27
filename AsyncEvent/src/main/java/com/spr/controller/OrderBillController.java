@@ -1,9 +1,11 @@
 package com.spr.controller;
 
 import com.spr.entity.OrderBill;
+import com.spr.entity.SprUser;
 import com.spr.eum.OrderBillOperator;
 import com.spr.event.OrderBillEvent;
 import com.spr.event.OrderBillEventDto;
+import com.spr.event.SprComplexEvent4CreateBill;
 import com.spr.result.DockResult;
 import com.spr.service.ins.OrderBillService;
 import com.spr.util.BusinessException;
@@ -29,7 +31,7 @@ public class OrderBillController {
     private ApplicationContext applicationContext;
 
     /**
-     * 创建订单 unsafe
+     * 创建订单 unsafe 非线程安全方法
      */
     @GetMapping("/createBill")
     @ResponseBody
@@ -44,7 +46,7 @@ public class OrderBillController {
     }
 
     /**
-     * 创建订单 safe
+     * 创建订单 safe 线程安全
      */
     @GetMapping("/createBill4Safe")
     @ResponseBody
@@ -64,6 +66,18 @@ public class OrderBillController {
             LOGGER.error("创建订单失败：", e);
             return DockResult.fail("创建订单失败,请联系管理员");
         }
+    }
+    /**
+     * 
+     */
+    @GetMapping("/testComplexEvent")
+    @ResponseBody
+    public DockResult testComplexEvent(Integer age) {
+        SprComplexEvent4CreateBill createBillEvent = new SprComplexEvent4CreateBill("source");
+        SprUser sprUser = SprUser.builder(1L, age, "zhangsan");
+        createBillEvent.setSprUser(sprUser);
+        applicationContext.publishEvent(createBillEvent);
+        return DockResult.success("SUCCESS");
     }
 
 }

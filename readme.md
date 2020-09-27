@@ -1,6 +1,17 @@
 # Spring 经典应用场景
-## Spring 事件监听器
+## Spring事件机制-观察者模式
 + AsyncEvent  
+#### 观察者模式一般包括以下对象
++ Subject 抽象的被观察对象
++ ConcreteSubject 具体的被观察对象
++ Observer 抽象的观察者
++ ConcreteObserver 具体的观察者
+
+#### Spring-观察者模式应用
+> Spring通过ApplicationEvent和ApplicationListener接口来处理时间,  
+    如果某个Bean实现了ApplicationListener接口并被部署到容器中，  
+    那么每次对象的ApplicationEvent发布到容器中，都会通知该Bean，
+
 #### 测试异步事件
 浏览器直接访问`127.0.0.1:8888/createBill?code=001`   
 ####  Spring异步事件的应用范围
@@ -9,8 +20,8 @@
 3:微信模版消息
 4:执行异步任务
 #### 优势
-1: 实现核心业务和子业务的解耦
-2: 监听器基于spring bean实现，与其他spring 组件完美融合  
+1: 实现核心业务和子业务的解耦，改善代码流程
+2: 监听器基于spring bean实现，与其他spring 组件能够完美结合  
 3: 支持自定义异步线程池  
 4: 避免手动创建异步线程和过度使用消息队列
 
@@ -23,6 +34,26 @@
 #### 测试全局锁SprLock
 测试 `127.0.0.1:8888/createBill4Safe?code=001`  
 浏览器开启两个窗口直接访问 但是需要开启浏览控制台 具体详见‘浏览器域名并发限制’
+
+### Spring监听器高级用法
+#### 1:添加监听器触发条件，和规定监听范围 ，测试地址
+`http://127.0.0.1:8888/testComplexEvent?age=1`  
+`http://127.0.0.1:8888/testComplexEvent?age=19`  
+#### 2：自定义Spring线程池
+参照代码*com.spr.event.SprAsyncConfig*  
+访问`http://127.0.0.1:8888/testComplexEvent?age=19`   
+日志打印 2020-09-27 14:20:07.464  INFO 16120 --- [-async-thread-1] com.spr.event.OrderBillEventListener :略....   
+表示线程池配置成功  
+
+#### EventListener注解参数解析
++ value
++ classes
++ condition
+其中value作用和classes一样  
+
+代码位置：*com.spr.event.OrderBillEventListener.testComplexEvent*  
+`@EventListener(value = {SprComplexEvent4CreateBill.class, SprComplexEvent4UpdateBill.class}, condition = "#event.sprUser.age > 18")`   
+这段注解表示，该方法监听SprComplexEvent4CreateBill和SprComplexEvent4UpdateBill两种事件，而且只有当sprUser对象的age属性大于18的时候，才会出发监听器  
 
 ## 浏览器域名并发限制
 #### 现象一
